@@ -16,5 +16,43 @@ namespace zatsu_ge::window {
 				return std::nullopt;
 			}
 		}
+
+		Window(SDL_Window * window_p)
+		: window_p{window_p}
+		{}
+
+
+		Window(const Window& rhs) = delete;
+		auto operator=(const Window& rhs) -> Window& = delete;
+
+		Window(Window&& rhs)
+		: window_p{rhs.window_p}
+		{
+			rhs.window_p = nullptr;
+		}
+
+		auto operator=(Window&& rhs) -> Window& {
+			if(this->window_p != nullptr) {
+				SDL_DestroyWindow(this->window_p);
+			}
+			this->window_p = rhs.window_p;
+			rhs.window_p = nullptr;
+			return *this;
+		}
+
+		~Window() {
+			if(this->window_p != nullptr) {
+				SDL_DestroyWindow(this->window_p);
+			}
+		}
+	};
+
+	struct SomethingHasWindow final {
+		Window widw;
+
+		SomethingHasWindow(const SomethingHasWindow&) = delete;
+		auto operator=(const SomethingHasWindow&) -> SomethingHasWindow& = delete;
+		SomethingHasWindow(SomethingHasWindow&&) = default;
+		auto operator=(SomethingHasWindow&&) -> SomethingHasWindow& = default;
 	};
 }
